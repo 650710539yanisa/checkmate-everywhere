@@ -1,0 +1,643 @@
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: 'Sarabun', system-ui, -apple-system, sans-serif;
+  color: #3a3631;
+}
+
+/* โต๊ะหิน */
+.table {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  background:
+    radial-gradient(circle at 20% 15%, rgba(255,255,255,.35), transparent 40%),
+    radial-gradient(circle at 80% 85%, rgba(0,0,0,.12), transparent 45%),
+    repeating-linear-gradient(115deg, rgba(0,0,0,.025) 0 2px, transparent 2px 7px),
+    #b8b3aa;
+}
+
+/* ===== หน้าล็อบบี้ ===== */
+.lobby {
+  background: #f1ece2;
+  padding: 32px 28px;
+  border-radius: 20px;
+  text-align: center;
+  box-shadow: 0 12px 30px rgba(0,0,0,.25);
+  width: min(92vw, 360px);
+}
+.lobby h1 { margin: 0 0 4px; }
+.lobby p { margin: 0 0 20px; color: #7a7367; }
+.lobby form { display: flex; gap: 8px; }
+.lobby input {
+  flex: 1;
+  min-width: 0;
+  padding: 10px 12px;
+  border: 1px solid #c9c2b4;
+  border-radius: 10px;
+  font-size: 16px;
+  text-transform: uppercase;
+  background: #fffdf8;
+}
+.or { margin: 14px 0; color: #9a9385; font-size: 14px; }
+
+.btn {
+  padding: 10px 16px;
+  border: 1px solid #c9c2b4;
+  background: #f7f3ea;
+  border-radius: 10px;
+  font: inherit;
+  cursor: pointer;
+  transition: transform .1s, background .15s;
+}
+.btn:hover { background: #fff; }
+.btn:active { transform: scale(.97); }
+.btn.primary { background: #3a3631; color: #f7f3ea; border-color: #3a3631; }
+.btn.primary:hover { background: #55504a; }
+.btn.small { padding: 6px 10px; font-size: 14px; }
+.lobby > .btn.primary { width: 100%; }
+
+/* ===== หน้าเกม ===== */
+.game {
+  width: min(94vw, 560px);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+.room { font-size: 15px; }
+
+.tray {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 28px;
+  font-size: 14px;
+}
+.tray-name { font-weight: 600; }
+.dot { width: 9px; height: 9px; border-radius: 50%; background: #a09a8e; }
+.dot.on { background: #4caf7a; }
+.lost { font-size: 18px; opacity: .75; display: flex; flex-wrap: wrap; }
+.lost .piece-img { width: 22px; height: 22px; object-fit: contain; }
+
+/* ===== กระดานกระเบื้องหินเทา ===== */
+/* ===== กระดานกระเบื้องบนโต๊ะปูน ===== */
+.board {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  grid-template-rows: repeat(8, 1fr);
+  aspect-ratio: 1;
+  margin: 20px 0;
+  border: 12px solid transparent;          /* ให้พื้นปูนด้านล่างโผล่ที่ขอบ */
+  border-radius: 8px;
+  background-color: #b4b0a7;
+  background-size: 220px 220px, 220px 220px, 500px 500px;
+  background-image:
+    /* รูพรุน/จุดด่างของปูน */
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='p' x='0' y='0' width='100%25' height='100%25'><feTurbulence type='fractalNoise' baseFrequency='.55' numOctaves='3' seed='8' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .2  0 0 0 0 .19  0 0 0 0 .17  6 0 0 0 -3.9'/></filter><rect width='100%25' height='100%25' filter='url(%23p)'/></svg>"),
+    /* เม็ดทราย/ผิวหยาบ */
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='c' x='0' y='0' width='100%25' height='100%25'><feTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='4' seed='5' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .3  0 0 0 0 .28  0 0 0 0 .25  1.5 0 0 0 -.55'/></filter><rect width='100%25' height='100%25' filter='url(%23c)'/></svg>"),
+    /* ปื้นสีเข้ม-อ่อนไม่สม่ำเสมอ */
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='500' height='500'><filter id='b' x='0' y='0' width='100%25' height='100%25'><feTurbulence type='fractalNoise' baseFrequency='.012' numOctaves='3' seed='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .35  0 0 0 0 .33  0 0 0 0 .3  .9 0 0 0 -.3'/></filter><rect width='100%25' height='100%25' filter='url(%23b)'/></svg>");
+  box-shadow:
+    0 18px 32px rgba(0,0,0,.35),
+    0 0 0 1px rgba(0,0,0,.2);
+  user-select: none;
+  container-type: inline-size;
+}
+
+/* ชั้นผิวกระเบื้อง คลุมช่องทั้งหมด อยู่ใต้หมาก */
+/* ชั้นผิวกระเบื้อง คลุมช่องทั้งหมด อยู่ใต้หมาก */
+.board::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  mix-blend-mode: multiply;
+  box-shadow: inset 0 0 10px rgba(0,0,0,.28);   /* เงาตรงรอยต่อกับขอบปูน */
+  background-repeat: repeat, repeat, no-repeat;
+  background-size: 140px 140px, 160px 160px, 100% 100%;
+  background-image:
+    /* รูพรุนเล็กบนกระเบื้อง */
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='140' height='140'><filter id='a' x='0' y='0' width='100%25' height='100%25'><feTurbulence type='fractalNoise' baseFrequency='.6' numOctaves='3' seed='4' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .18  0 0 0 0 .17  0 0 0 0 .15  5 0 0 0 -3.3'/></filter><rect width='100%25' height='100%25' filter='url(%23a)'/></svg>"),
+    /* เม็ดหยาบ */
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='g' x='0' y='0' width='100%25' height='100%25'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' seed='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .3  0 0 0 0 .27  0 0 0 0 .24  .8 0 0 0 -.28'/></filter><rect width='100%25' height='100%25' filter='url(%23g)'/></svg>"),
+    /* เมฆจางๆ */
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='600' height='600'><filter id='m' x='0' y='0' width='100%25' height='100%25'><feTurbulence type='fractalNoise' baseFrequency='.004 .011' numOctaves='4' seed='11'/><feColorMatrix values='0 0 0 0 .5  0 0 0 0 .45  0 0 0 0 .4  .40 0 0 0 -.13'/></filter><rect width='100%25' height='100%25' filter='url(%23m)'/></svg>");
+}
+
+.tile {
+  /* ผิวด้าน แสงเฉียงเบามาก */
+  --sheen: linear-gradient(135deg,
+    rgba(255,255,255,.08) 0%,
+    rgba(0,0,0,0) 50%,
+    rgba(0,0,0,.04) 100%);
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  background-image: var(--sheen);
+  /* ร่องยาแนวชัดขึ้น ขอบกระเบื้องแทบไม่นูน */
+  box-shadow:
+    inset 0 0 0 1px rgba(40,35,30,.32),
+    inset 1px 1px 0 rgba(255,255,255,.12),
+    inset -1px -1px 1px rgba(0,0,0,.08);
+}
+
+.tile.light { background-color: #a3a096; }
+.tile.dark  { background-color: #716e67; }
+/* ใช้ outline แทน box-shadow จะได้ไม่ไปทับขอบนูน */
+.tile.selected {
+  outline: 3px solid #df7acb;
+  outline-offset: -3px;
+}
+
+.tile.check {
+  background-image:
+    radial-gradient(circle, rgba(255,90,90,.9) 0%, transparent 75%),
+    var(--sheen);
+}
+
+/* ไฮไลต์การเดินล่าสุด */
+.tile.last::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(240, 200, 90, .5);
+}
+
+/* จุดบอกทางเดิน (สว่าง เพื่อให้เห็นบนช่องเข้ม) */
+.tile.target::after {
+  content: '';
+  width: 28%; height: 28%;
+  border-radius: 50%;
+  background: rgba(255, 253, 245, .55);
+  box-shadow: 0 0 0 1px rgba(0,0,0,.15);
+}
+.tile.capture::after {
+  content: '';
+  position: absolute; inset: 6%;
+  border-radius: 50%;
+  border: 3px solid rgba(255, 120, 100, .85);
+}
+
+/* ===== หมาก ===== */
+
+/* ขนาดหมากแต่ละชนิด (แก้เลขตรงนี้)
+   1 = กว้างเท่าช่อง, 1.5 = ใหญ่กว่าช่อง 1.5 เท่า */
+.piece.t-p { --s: 0.8; }    /* เบี้ย */
+.piece.t-n { --s: 0.8; }    /* ม้า */
+.piece.t-b { --s: 0.8; }    /* บิชอป */
+.piece.t-r { --s: 0.8; }      /* เรือ */
+.piece.t-q { --s: 1; }    /* ควีน */
+.piece.t-k { --s: 1; }    /* คิง */
+
+/* ปรับแยกสีได้ เช่น
+.piece.w.t-b { --s: 1.6; }
+.piece.b.t-b { --s: 1.3; } */
+
+.piece {
+  --s: 1.2;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: calc(var(--s) * 100%);
+  aspect-ratio: 1;
+  transform: translate(-50%, -50%);   /* อยู่กลางช่อง (ห้ามใส่ style transform ใน JSX ที่ .piece) */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;               /* คลิกทะลุไปที่ช่อง */
+  z-index: 1;                         /* อยู่เหนือชั้นลายหินและช่องข้างเคียง */
+  font-size: calc(var(--s) * 8.1cqw); /* ขนาดอีโมจิ */
+  line-height: 1;
+  /* เงาตามรูปร่างชิ้น ทิศเดียวกันทุกชิ้น (เยื้องขวา, เยื้องลง, เบลอ, ความเข้ม) */
+  filter: drop-shadow(3px 6px 4px rgba(0,0,0,.55));
+}
+
+/* ชั้นหมุน แยกจากชั้นเงา เพื่อให้ทิศเงาไม่หมุนตามชิ้น */
+.piece-rot {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform .15s;
+}
+
+.piece .piece-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  pointer-events: none;
+}
+
+/* ถ้าฝั่งดำใช้รูปเดียวกับฝั่งขาว เอา comment ออกเพื่อทำให้ดูเข้มขึ้น
+.piece.b .piece-img { filter: grayscale(1) contrast(1.2) brightness(.7); } */
+
+/* ===== สถานะ / ปุ่ม / ประวัติการเดิน ===== */
+.status {
+  text-align: center;
+  padding: 10px;
+  border-radius: 10px;
+  background: rgba(247, 243, 234, .85);
+  font-weight: 600;
+}
+.status.over { background: #3a3631; color: #f7f3ea; }
+
+.actions { display: flex; justify-content: center; gap: 8px; }
+
+.moves {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 10px;
+  max-height: 90px;
+  overflow-y: auto;
+  padding: 8px 10px;
+  background: rgba(247, 243, 234, .6);
+  border-radius: 10px;
+  font-size: 14px;
+}
+.moves em { color: #8a8478; font-style: normal; margin-right: 2px; }
+
+/* ===== Theme: Classic ===== */
+.board.theme-classic {
+  border: 10px solid #5c4a3a;
+  border-radius: 6px;
+  background: #5c4a3a;                 /* ล้างพื้นปูนของธีม bag */
+  box-shadow: 0 14px 28px rgba(0,0,0,.3);
+}
+.board.theme-classic::after { display: none; }   /* ไม่มีลายหิน */
+
+.board.theme-classic .tile {
+  background-image: none;
+  box-shadow: none;
+}
+.board.theme-classic .tile.light { background-color: #f0d9b5; }
+.board.theme-classic .tile.dark  { background-color: #b58863; }
+
+.board.theme-classic .tile.check {
+  background-image: radial-gradient(circle, rgba(255,90,90,.9) 0%, transparent 75%);
+}
+.board.theme-classic .tile.last::before { background: rgba(240, 200, 60, .45); }
+.board.theme-classic .tile.target::after {
+  background: rgba(0,0,0,.22);
+  box-shadow: none;
+}
+.board.theme-classic .tile.capture::after { border-color: rgba(200, 50, 50, .75); }
+
+/* หมากเป็นตัวอักษรหมากรุก ขนาดเท่ากันทุกชนิด */
+.board.theme-classic .piece {
+  --s: 1;
+  font-size: 9.5cqw;
+  filter: drop-shadow(1px 3px 2px rgba(0,0,0,.4));
+}
+.board.theme-classic .piece.w { color: #fff;    text-shadow: 0 0 2px #000, 0 0 2px #000, 0 0 1px #000; }
+.board.theme-classic .piece.b { color: #1d1b19; }
+
+/* ===== หน้าเลือกธีม ===== */
+.theme-page {
+  background: #f1ece2;
+  padding: 28px;
+  border-radius: 20px;
+  text-align: center;
+  box-shadow: 0 12px 30px rgba(0,0,0,.25);
+  width: min(92vw, 440px);
+}
+.theme-page h1 { margin: 0 0 4px; }
+.theme-page > p { margin: 0 0 20px; color: #7a7367; }
+
+.theme-list { display: grid; gap: 12px; margin-bottom: 20px; }
+
+.theme-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px;
+  border: 2px solid #c9c2b4;
+  border-radius: 14px;
+  background: #f7f3ea;
+  font: inherit;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color .15s, background .15s, transform .1s;
+}
+.theme-card:hover  { background: #fff; }
+.theme-card:active { transform: scale(.98); }
+.theme-card.active { border-color: #3a3631; background: #fff; }
+.theme-card strong { display: block; }
+.theme-card .desc  { font-size: 14px; color: #7a7367; }
+
+.swatch {
+  display: grid;
+  grid-template-columns: repeat(2, 28px);
+  grid-template-rows: repeat(2, 28px);
+  border-radius: 6px;
+  overflow: hidden;
+  flex: none;
+  box-shadow: 0 0 0 1px rgba(0,0,0,.2);
+}
+.swatch i:nth-child(1), .swatch i:nth-child(4) { background: var(--l); }
+.swatch i:nth-child(2), .swatch i:nth-child(3) { background: var(--d); }
+
+.theme-page .actions { margin-top: 4px; }
+
+
+
+/* Three-step navigation */
+.steps {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 28px;
+}
+
+.step {
+  padding: 9px 15px;
+  border-radius: 999px;
+  background: #eee8ed;
+  color: #777078;
+  font-size: 0.9rem;
+}
+
+.step.done {
+  background: #e5d5e1;
+  color: #704563;
+}
+
+.step.active {
+  background: #d96eab;
+  color: white;
+  font-weight: 700;
+}
+
+/* Theme selection */
+.theme-card {
+  position: relative;
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+  transition:
+    border-color 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.theme-card:hover {
+  transform: translateY(-2px);
+}
+
+.theme-card.active {
+  border: 2px solid #d96eab;
+  box-shadow: 0 0 0 3px rgba(217, 110, 171, 0.12);
+}
+
+.theme-info {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1;
+}
+
+.theme-info .desc {
+  line-height: 1.5;
+}
+
+.theme-check {
+  font-size: 0.85rem;
+  color: #a54d83;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+@media (max-width: 480px) {
+  .theme-card {
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .theme-check {
+    margin-left: auto;
+  }
+
+  .steps {
+    gap: 6px;
+  }
+
+  .step {
+    padding: 8px 10px;
+    font-size: 0.8rem;
+  }
+}
+
+/* ===== Classic chess pieces ===== */
+.board.theme-classic .classic-piece {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  font-family: "Segoe UI Symbol", "Noto Sans Symbols 2",
+    "Apple Symbols", sans-serif;
+  font-size: 9.5cqw;
+  line-height: 1;
+  font-weight: normal;
+}
+
+.board.theme-classic .piece.w .classic-piece {
+  color: #fffdf5;
+  text-shadow:
+    -1px -1px 1px #4b3828,
+     1px -1px 1px #4b3828,
+    -1px  1px 1px #4b3828,
+     1px  1px 1px #4b3828,
+     0 2px 3px rgba(0, 0, 0, 0.4);
+}
+
+.board.theme-classic .piece.b .classic-piece {
+  color: #2a211b;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+
+/* =========================================================
+   ===== Theme: Bistro (กระดาษวาดมือ + หมากไม้บนโต๊ะอาหาร) =====
+   ========================================================= */
+
+.board.theme-bistro {
+  /* ขอบกระดาษสีครีมอุ่นๆ บนโต๊ะ */
+  border: 14px solid #e8dfd1;
+  border-radius: 3px;
+  background: #e8dfd1;
+  box-shadow:
+    0 14px 28px rgba(0, 0, 0, 0.28),
+    /* เส้นกรอบนอกที่เหมือนวาดด้วยดินสอ */
+    inset 0 0 0 2px #4a4744;
+}
+
+/* เปลี่ยนพื้นผิวหินของเดิม ให้กลายเป็นเนื้อกระดาษบางๆ */
+.board.theme-bistro::after {
+  opacity: 0.35;
+  box-shadow: inset 0 0 12px rgba(90, 70, 50, 0.18);
+}
+
+.board.theme-bistro .tile {
+  background-image: none;
+  /* เส้นตารางเหมือนขีดด้วยดินสอ */
+  box-shadow: inset 0 0 0 1px rgba(60, 55, 50, 0.45);
+}
+
+/* ช่องขาว = สีกระดาษเปลือยๆ */
+.board.theme-bistro .tile.light {
+  background-color: #e8dfd1;
+}
+
+/* ช่องดำ = เอฟเฟกต์แรเงาดินสอ/ชาร์โคล (มีลายเส้นทแยงมุม) */
+.board.theme-bistro .tile.dark {
+  background-color: #4a4744;
+  background-image:
+    repeating-linear-gradient(
+      -45deg,
+      rgba(232, 223, 209, 0.08) 0px,
+      rgba(232, 223, 209, 0.08) 2px,
+      transparent 2px,
+      transparent 5px
+    ),
+    repeating-linear-gradient(
+      -35deg,
+      rgba(0, 0, 0, 0.15) 0px,
+      rgba(0, 0, 0, 0.15) 1px,
+      transparent 1px,
+      transparent 4px
+    );
+}
+
+/* ไฮไลต์ช่องและการเดิน */
+.board.theme-bistro .tile.check {
+  background-image: radial-gradient(circle, rgba(220, 70, 70, 0.85) 0%, transparent 75%);
+}
+.board.theme-bistro .tile.last::before {
+  background: rgba(215, 165, 70, 0.38);
+}
+.board.theme-bistro .tile.target::after {
+  background: rgba(90, 75, 60, 0.35);
+  box-shadow: none;
+}
+.board.theme-bistro .tile.capture::after {
+  border-color: rgba(190, 60, 50, 0.75);
+}
+
+/* ===== ตัวหมากไม้ (Wooden Pieces) สำหรับธีม Bistro ===== */
+/* ===== ตัวหมาก SVG สำหรับธีม Bistro ===== */
+.board.theme-bistro .piece {
+  --s: 0.94; /* ขยายให้เต็มช่องมากขึ้นเพราะรูป 3D มีขอบใส */
+  /* เงาใต้ฐานหมากให้ดูตั้งติดพื้นกระดาษ */
+  filter: drop-shadow(0px 6px 4px rgba(0, 0, 0, 0.5));
+}
+
+.board.theme-bistro .bistro-piece {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+/* ⬜ ช่องขาว: เอาชอล์กสีขาวนวลมาถูระบายทึบๆ ขอบฟุ้งๆ */
+.board.theme-bistro .tile.light {
+  background-color: transparent;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='chalkLight'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' result='noise'/%3E%3CfeDisplacementMap in='SourceGraphic' in2='noise' scale='7'/%3E%3C/filter%3E%3Crect x='2' y='2' width='96' height='96' rx='4' fill='rgba(255, 252, 240, 0.25)' stroke='rgba(255, 252, 240, 0.4)' stroke-width='2' filter='url(%23chalkLight)'/%3E%3C/svg%3E");
+  background-size: cover;
+}
+
+/* ⬛ ช่องดำ: แรเงาด้วยเส้นชอล์กแนวทแยง (Chalk Hatching) + ถ่านดำสากๆ */
+.board.theme-bistro .tile.dark {
+  background-color: transparent;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='chalkDark'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' result='noise'/%3E%3CfeDisplacementMap in='SourceGraphic' in2='noise' scale='6'/%3E%3C/filter%3E%3Cdefs%3E%3Cpattern id='hatch' width='10' height='10' patternTransform='rotate(45 0 0)' patternUnits='userSpaceOnUse'%3E%3Cline x1='0' y1='0' x2='0' y2='10' stroke='rgba(255, 255, 255, 0.08)' stroke-width='3'/%3E%3Cline x1='5' y1='0' x2='5' y2='10' stroke='rgba(0, 0, 0, 0.35)' stroke-width='4'/%3E%3C/pattern%3E%3C/defs%3E%3Crect x='2' y='2' width='96' height='96' rx='4' fill='rgba(10, 12, 12, 0.45)' filter='url(%23chalkDark)'/%3E%3Crect x='4' y='4' width='92' height='92' rx='3' fill='url(%23hatch)' stroke='rgba(255, 255, 255, 0.12)' stroke-width='1.5' stroke-dasharray='12 4 6 4' filter='url(%23chalkDark)'/%3E%3C/svg%3E");
+  background-size: cover;
+}
+
+/* =========================================
+   🎨 ธีม Bistro: กระดานดำ & ภาพวาดสีชอล์ก (Chalkboard)
+   ========================================= */
+
+.board.theme-bistro {
+  /* สีพื้นกระดานดำคาเฟ่ (เทาถ่านอมเขียวนิดๆ แบบกระดานชนวน) */
+  background-color: #262928;
+  /* สร้าง Texture ผิวกระดานสากๆ + ฝุ่นชอล์กจางๆ */
+  background-image: 
+    radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.06) 0%, rgba(0, 0, 0, 0.25) 100%),
+    url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='boardNoise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23boardNoise)' opacity='0.07'/%3E%3C/svg%3E");
+  
+  /* กรอบกระดาน: เหมือนตีเส้นกรอบด้วยชอล์ก 2 ชั้น */
+  border: 6px solid #1e201f;
+  outline: 2px dashed rgba(255, 255, 255, 0.35);
+  outline-offset: -5px;
+  border-radius: 8px;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.45);
+  padding: 6px;
+}
+
+/* เส้นตาราง: ให้ดูเหมือนลากเส้นชอล์กเบาๆ */
+.board.theme-bistro .tile {
+  position: relative;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-sizing: border-box;
+}
+
+/* ⬜ ช่องขาว: ใช้ SVG สร้างรอยฝนชอล์กสากๆ ขอบขรุขระเหมือนระบายด้วยมือ */
+.board.theme-bistro .tile.light {
+  background-color: transparent;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='chalkRub'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='4' result='noise'/%3E%3CfeDisplacementMap in='SourceGraphic' in2='noise' scale='6'/%3E%3C/filter%3E%3Crect x='3' y='3' width='94' height='94' rx='3' fill='rgba(255, 253, 245, 0.22)' filter='url(%23chalkRub)'/%3E%3Crect x='6' y='6' width='88' height='88' fill='none' stroke='rgba(255, 253, 245, 0.35)' stroke-width='1.5' stroke-dasharray='8 4 2 4' filter='url(%23chalkRub)'/%3E%3C/svg%3E");
+  background-size: cover;
+}
+
+/* ⬛ ช่องดำ: ปล่อยเป็นพื้นกระดานดำ แต่มีรอยฝุ่นชอล์กเปื้อนจางๆ */
+.board.theme-bistro .tile.dark {
+  background-color: rgba(0, 0, 0, 0.12);
+  box-shadow: inset 0 0 12px rgba(255, 255, 255, 0.03);
+}
+
+/* ✨ ตอนเลือกหมาก หรือ เดินล่าสุด (เหมือนเอาชอล์กสีเหลือง/ฟ้ามาระบายทับ) */
+.board.theme-bistro .tile.selected {
+  background-color: rgba(255, 230, 109, 0.28) !important;
+  box-shadow: inset 0 0 0 2px rgba(255, 230, 109, 0.65);
+}
+
+.board.theme-bistro .tile.last {
+  background-color: rgba(168, 218, 220, 0.22) !important;
+}
+
+/* 🎯 จุดบอกทางเดิน (Target): เหมือนเอาชอล์กมาแต้มจุดกลมๆ เบี้ยวๆ */
+.board.theme-bistro .tile.target::after {
+  content: '';
+  width: 26%;
+  height: 26%;
+  background: rgba(255, 253, 245, 0.55);
+  border-radius: 55% 45% 50% 50%; /* ทำให้กลมไม่เป๊ะ เหมือนแต้มด้วยมือ */
+  box-shadow: 0 0 6px rgba(255, 255, 255, 0.3);
+}
+
+/* 🎯 ช่องที่กินได้ (Capture): เหมือนเอาชอล์กสีแดงอมส้มมาวงรอบตัวหมาก */
+.board.theme-bistro .tile.capture::after {
+  content: '';
+  position: absolute;
+  inset: 6px;
+  border: 2.5px dashed rgba(255, 125, 100, 0.75);
+  border-radius: 50% 45% 52% 48%;
+  background: transparent;
+}
+
+
